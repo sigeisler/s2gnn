@@ -1,0 +1,63 @@
+out_dir: tests/results
+metric_best: accuracy-SBM
+wandb:
+  use: True
+  project: cluster
+  entity: tum_i26
+dataset:
+  format: synthetic
+  name: custom-cluster-gmm
+  task: graph
+  task_type: classification
+  transductive: False
+  split_mode: standard
+  node_encoder: True
+  node_encoder_name: LinearNode
+  node_encoder_bn: False
+  edge_encoder: False
+  custom_cluster:
+    n_graphs: [10000, 1000, 1000]
+    n_clusters: 6
+    size_min: 100
+    size_max: 200
+    graph_type: gmm
+    gmm_dim: 2
+    gmm_range_clusters: 10
+    gmm_std_clusters: 2
+    gmm_edges_min: 1
+    gmm_edges_max: 10
+    gmm_cluster_from_posterior: True
+train:
+  mode: custom
+  batch_size: 50
+  eval_period: 1
+  ckpt_best: True
+  ckpt_data_splits: ['val', 'test']
+  ckpt_data_attrs: ['y', 'pred', 'batch']
+model:
+  type: s2gnn
+  loss_fun: weighted_cross_entropy
+gnn:
+  head: inductive_node
+  layers_pre_mp: 0
+  layers_mp: 4
+  layers_post_mp: 1
+  dim_inner: 128
+  layer_type: gcnconv
+  residual: True
+  stage_type: stack
+  batchnorm: False
+  act: gelu
+  dropout: 0.0
+  agg: mean
+optim:
+  clip_grad_norm: True
+  optimizer: adamW
+  weight_decay: 0.0001
+  base_lr: 0.003
+  max_epoch: 50
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 5
+share:
+  dim_in: 236
+device: cuda

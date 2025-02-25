@@ -1,0 +1,65 @@
+out_dir: tests/results
+metric_best: accuracy-SBM
+wandb:
+  use: True
+  project: cluster
+  entity: tum_i26
+dataset:
+  format: PyG-GNNBenchmarkDataset
+  name: CLUSTER
+  task: graph
+  task_type: classification
+  transductive: False
+  split_mode: standard
+  node_encoder: True
+  node_encoder_name: LinearNode
+  node_encoder_bn: False
+  edge_encoder: False
+posenc_MagLapPE:
+  enable: True
+  q: 0.0
+  largest_connected_component: False
+  max_freqs: 50
+train:
+  mode: custom
+  batch_size: 128
+  eval_period: 1
+  ckpt_best: True
+  ckpt_data_splits: ['val', 'test']
+  ckpt_data_attrs: ['y', 'pred', 'batch']
+model:
+  type: s2gnn
+  loss_fun: weighted_cross_entropy
+gnn:
+  head: inductive_node
+  layers_pre_mp: 0
+  layers_mp: 3
+  layers_post_mp: 2
+  dim_inner: 146
+  layer_type: gcnconv
+  residual: True
+  stage_type: stack
+  batchnorm: False
+  act: gelu
+  dropout: 0.1
+  agg: mean
+  spectral:
+    layer_skip: [0, 2]
+    residual: True
+    filter_encoder: basis
+    frequency_cutoff: 1.3
+    feature_transform: glu
+    filter_variant: ~
+    basis_bottleneck: 1.0
+    num_heads_filter_encoder: -1
+    learnable_norm: True
+    window: tukey
+optim:
+  clip_grad_norm: True
+  optimizer: adamW
+  weight_decay: 0.0
+  base_lr: 0.001
+  max_epoch: 100
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 5
+device: cuda

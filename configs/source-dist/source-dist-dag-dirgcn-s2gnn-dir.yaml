@@ -1,0 +1,75 @@
+out_dir: tests/results
+metric_best: r2
+wandb:
+  use: True
+  project: source-dist
+  entity: tum_i26
+dataset:
+  format: synthetic
+  name: source-dist
+  task: graph  # Needs to be 'graph' despite node-level task
+  task_type: regression
+  transductive: False
+  node_encoder: True
+  node_encoder_name: LinearNode
+  node_encoder_bn: False
+  edge_encoder: False
+  source_dist:
+    n_graphs: [50000, 2500, 2500]
+    train_n_nodes: [500, 1000]
+    valid_n_nodes: [500, 1000]
+    test_n_nodes: [500, 1000]
+    p_add_edges_from_tree: 10
+posenc_MagLapPE:
+  enable: True
+  precompute: True
+  q: 0.001
+  largest_connected_component: False
+  positional_encoding: True
+  max_freqs: 50
+train:
+  mode: custom
+  batch_size: 36
+  eval_period: 1
+  ckpt_best: True
+  ckpt_data_splits: ['val', 'test']
+  ckpt_data_attrs: ['y', 'pred', 'batch']
+model:
+  type: s2gnn
+  loss_fun: l2
+gnn:
+  head: inductive_node
+  layers_pre_mp: 0
+  layers_mp: 5
+  layers_post_mp: 3
+  dim_inner: 236
+  layer_type: lin_gnn
+  residual: True
+  stage_type: stack
+  batchnorm: False
+  act: gelu
+  dropout: 0.05
+  agg: mean
+  adj_norm: gcn
+  dir_aggr: cat
+  make_undirected: False
+  spectral:
+    residual: True
+    filter_encoder: basis
+    frequency_cutoff: 0.1
+    # drop_trailing_repeated: True
+    feature_transform: glu
+    filter_variant: ~
+    basis_bottleneck: 0.03
+    window: tukey
+optim:
+  clip_grad_norm: True
+  optimizer: adamW
+  weight_decay: 0.008
+  base_lr: 0.001
+  max_epoch: 50
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 5
+share:
+  dim_in: 236
+device: cuda

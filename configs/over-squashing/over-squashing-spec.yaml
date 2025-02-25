@@ -1,0 +1,69 @@
+out_dir: tests/results
+metric_best: auto
+wandb:
+  use: True
+  project: over-squashing
+  entity: tum_i26
+dataset:
+  format: synthetic
+  name: over-squashing
+  task: graph
+  task_type: classification
+  transductive: False
+  split_mode: standard
+  node_encoder: True
+  node_encoder_name: LinearNode
+  node_encoder_bn: False
+  edge_encoder: False
+posenc_MagLapPE:
+  enable: True
+  q: 0.0
+  largest_connected_component: False
+  max_freqs: 20
+train:
+  mode: custom
+  batch_size: 256
+  eval_period: 1
+  ckpt_best: True
+  ckpt_data_splits: ['val', 'test']
+  ckpt_data_attrs: ['y', 'pred', 'batch']
+model:
+  type: s2gnn
+  loss_fun: weighted_cross_entropy
+gnn:
+  head: masked_readout_graph
+  layers_pre_mp: 0
+  layers_mp: 1
+  layers_post_mp: 1
+  dim_inner: 16
+  layer_type: gcnconv
+  stage_type: stack
+  batchnorm: False
+  act: gelu
+  dropout: 0.01
+  agg: mean
+  adj_norm: none
+  l2norm: False
+  residual: False
+  layer_skip: [0]
+  spectral:
+    layer_skip: []
+    residual: False
+    filter_encoder: basis
+    frequency_cutoff: 20  # 0.05
+    feature_transform: glu
+    filter_value_trans: nacos
+    basis_bottleneck: 0.2
+    window: tukey
+    basis_num_gaussians: 20
+optim:
+  clip_grad_norm: True
+  optimizer: adamW
+  weight_decay: 0.0005
+  base_lr: 0.01
+  max_epoch: 500
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 5
+share:
+  dim_in: 16
+device: cuda

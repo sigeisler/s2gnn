@@ -1,0 +1,26 @@
+# Python artifacts
+__pycache__
+*.egg-info
+.python-version
+.pyc
+
+# ML stuff
+/datasets
+/tests
+/logs
+/sbatch/logs
+wandb
+.hydra
+outputs
+multirun
+lightning_logs
+*.pickle
+*.pkl
+.ipynb_checkpoints/
+.vscode
+/notebooks/**/*.pdf
+
+# Others
+.DS_Store
+
+

@@ -1,0 +1,98 @@
+out_dir: tests/results
+dataset:
+  name: TPUGraphs
+  format: PyG-TPUGraphsMix
+  task: graph
+  task_type: ranking
+  transductive: False
+  node_encoder_name: TPUNode
+  tpu_graphs:
+    tpu_task: layout  # layout or tile
+    source: 
+      - nlp
+      - xla
+    search: 
+      - default
+      - random
+    subsample: 10000
+    normalize: True
+    custom: True
+    config_node_readout: True
+    encoder_factor: 5.
+wandb:
+  use: False
+  project: specspac-tpu-layout-mix
+  entity: tum_i26
+train:
+  mode: custom
+  batch_size: 1
+  eval_period: 25
+  ckpt_period: 25
+  sampler: full_batch
+  num_sample_configs: 52
+  scale_num_sample_configs: True
+val:
+  num_sample_configs: 1_000
+  num_sample_batch: 100
+model:
+  type: s2gnn
+  loss_fun: pairwise_hinge
+  edge_decoding: dot
+  graph_pooling: add
+posenc_MagLapPE:
+  enable: True
+  q: 0.000005
+  filter_encoder: attn  # lin, mlp or attn
+gnn:
+  head: s2gnn_graph
+  layers_pre_mp: 2
+  layers_mp: 3
+  layers_post_mp: 2
+  dim_inner: 96
+  layer_type: lin_gnn
+  stage_type: skipsum
+  batchnorm: False
+  act: prelu
+  dropout: 0.25
+  agg: mean
+  layernorm_post_mp: True
+  batchnorm_post_mp: False
+  make_undirected: False
+  use_edge_attr: True
+  l2norm: False
+  residual: False
+  adj_norm: dir
+posenc_MagLapPE:
+  enable: False
+  positional_encoding: False
+  drop_trailing_repeated: True
+  which: SA
+  filter_variant: silu
+  window: tukey
+  readout: attn
+  readout_residual: True
+  eigv_scale: 10
+  eigen:
+    max_freqs: 50
+  readout_sepnorm: True
+  filter_layers: 2
+  # filter_encoder: attn  # basis, lin, mlp or attn -- Only for DROP_spec_layer_type='default'
+  filter_encoder: basis 
+  frequency_cutoff: 0.06
+  feature_transform: glu_0.05
+  num_heads_filter_encoder: -1
+  feature_transform: node_type
+  q: 0.00002
+optim:
+  clip_grad_norm: True
+  optimizer: adam
+  base_lr: 0.001
+  max_epoch: 1000
+  batch_accumulation: 8
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 10
+  last_layer_no_wd: True
+  optimizer: adamW
+share:
+  dim_in: 128
+device: cuda
