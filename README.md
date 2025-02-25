@@ -42,3 +42,15 @@ python main.py \
 ```
 
 For the other experiments consider swapping out `configs/peptides-func/peptides-func-s2gnn.yaml`. For TPU graphs, you should use `main_tpugraphs.py` instead.
+
+## Cite
+Please cite our paper if you use the method in your own work:
+
+```
+@inproceedings{geisler2024_spatio-spectral_graph_neural_networks,
+title = {Transformers Meet Directed Graphs},
+author = {Geisler, Simon and Kosmala, Arthur and Herbst, Daniel and G\"unnemann, Stephan},
+booktitle={Thirty-eighth Conference on Neural Information Processing Systems (NeurIPS)},
+year = {2024},
+}
+```
